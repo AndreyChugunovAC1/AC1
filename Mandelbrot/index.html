@@ -1,0 +1,281 @@
+<html>
+
+<head>
+  <title>Checkers</title>
+
+  <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
+
+  <script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;   
+
+    uniform mat4 Plane;
+
+    void main(void)
+    {
+      float j = Plane[1][0];
+      int n = 0;
+      float k = 0.0;
+      vec3 color;
+      float kx = gl_FragCoord.x / 750.0;
+      float ky = gl_FragCoord.y / 500.0;
+      vec2 X = vec2(Plane[0][0] - Plane[0][2] + kx * 2.0 * Plane[0][2], Plane[0][1]  - Plane[0][3] + ky * 2.0 * Plane[0][3]), Y = X;
+
+      for (int i = 0; i > -1; i++)
+      {
+        X = vec2(X.x * X.x - X.y * X.y, 2.0 * X.x * X.y) + Y;
+        if (dot(X, X) > 4.0 || float(i) > j)
+          break;
+        n = i;
+      }
+      k = float(n) / j;
+      color = vec3(k - 0.6, k * 0.3 + k * k - 0.61, 0.4 + k - k * 0.3);
+      gl_FragColor = vec4(color, 1.0);    
+    }
+</script>
+
+  <script id="shader-vs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+
+    void main(void)
+    {
+      gl_Position = vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+
+  <script type="text/javascript">
+    var gl;
+    var Plane = mat4.create();
+    var flagclick = false;
+    Plane[4] = 100;
+    Plane[0] = -0.5;
+    Plane[1] = 0;
+    Plane[2] = 1.5;
+    Plane[3] = 1;
+    var PlaneMatrixUniform = 0;
+    var checkers_cell_width;
+    var last;
+    function initGL(canvas) {
+      try {
+        gl = canvas.getContext("experimental-webgl");
+        gl.viewportWidth = canvas.width;
+        gl.viewportHeight = canvas.height;
+      } catch (e) {
+      }
+      if (!gl) {
+        alert("Could not initialise WebGL");
+      }
+    }
+
+
+    function getShader(gl, id) {
+      var shaderScript = document.getElementById(id);
+      if (!shaderScript) {
+        return null;
+      }
+
+      var str = "";
+      var k = shaderScript.firstChild;
+      while (k) {
+        if (k.nodeType == 3) {
+          str += k.textContent;
+        }
+        k = k.nextSibling;
+      }
+
+      var shader;
+      if (shaderScript.type == "x-shader/x-fragment") {
+        shader = gl.createShader(gl.FRAGMENT_SHADER);
+      } else if (shaderScript.type == "x-shader/x-vertex") {
+        shader = gl.createShader(gl.VERTEX_SHADER);
+      } else {
+        return null;
+      }
+
+      gl.shaderSource(shader, str);
+      gl.compileShader(shader);
+
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        alert(gl.getShaderInfoLog(shader));
+        return null;
+      }
+
+      return shader;
+    }
+
+    var shaderProgram;
+
+    function initShaders() {
+      var fragmentShader = getShader(gl, "shader-fs");
+      var vertexShader = getShader(gl, "shader-vs");
+
+      shaderProgram = gl.createProgram();
+      gl.attachShader(shaderProgram, vertexShader);
+      gl.attachShader(shaderProgram, fragmentShader);
+      gl.linkProgram(shaderProgram);
+
+      if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+        alert("Could not initialise shaders");
+      }
+
+      gl.useProgram(shaderProgram);
+
+      shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+      gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+      PlaneMatrixUniform = gl.getUniformLocation(shaderProgram, "Plane");
+      //shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+      //shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+      //shaderProgram.cell_width_uniform = gl.getUniformLocation(shaderProgram, "cell_width");
+    }
+
+
+    var mvMatrix = mat4.create();
+    var pMatrix = mat4.create();
+    var scale = 1;
+
+    function setMatrixUniforms() {
+      Plane[4] = parseFloat(document.getElementById('input_checkers_cell_width').value);
+      if (Plane[4] == undefined || Plane[4] >= 100)
+        Plane[4] = 100;
+      gl.uniformMatrix4fv(PlaneMatrixUniform, false, Plane);
+      gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+      gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+      gl.uniform1f(shaderProgram.cell_width_uniform, checkers_cell_width);
+    }
+
+    var squareVertexPositionBuffer;
+
+    function initBuffers() {
+      squareVertexPositionBuffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+      vertices = [
+        1.0, 1.0, 0.0,
+        -1.0, 1.0, 0.0,
+        1.0, -1.0, 0.0,
+        -1.0, -1.0, 0.0
+      ];
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+      squareVertexPositionBuffer.itemSize = 3;
+      squareVertexPositionBuffer.numItems = 4;
+    }
+
+    function drawScene() {
+
+      gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+      gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+
+      mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+
+      mat4.identity(mvMatrix);
+
+      //mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
+      gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+      //mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
+      setMatrixUniforms();
+      gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
+    }
+    window.requestAnimationFrame(tick);
+    function tick() {
+
+      drawScene();
+    }    function getMouseDown(event)
+
+    flagclick = true;
+    {
+
+      last = {x:event.clientX, y:event.clientY};
+    }
+    {
+    function getMouseMove(event)
+      {
+      if (flagclick)
+        Plane[1] += (event.clientY - last.y) / 250.0 * scale;
+        Plane[0] += -(event.clientX - last.x) / 250.0 * scale;
+      }
+        last = {x:event.clientX, y:event.clientY};
+
+    }
+    {
+    function getMouseUp(event)
+
+      flagclick = false;
+    }
+    {
+    function GetWheelMouse(event)
+
+      event.delta
+    }
+    { 
+    function GetWheelMouse(event)
+    {
+      event.clientX -= 3;
+      event.clientY -= 3;
+      if (event.deltaY > 0) {
+        Plane[1] = -(event.clientY - 250.0) / 250.0 * -Plane[3] + Plane[1];
+        Plane[0] = -(event.clientX - 375.0) / 375.0 * Plane[2] + Plane[0];
+        Plane[3] *= 2;
+        Plane[2] *= 2;
+        scale *= 2;
+      }
+      else if (event.deltaY < 0)
+      // ((event.clientX - 375.0) / 375.0; (event.clientY - 250.0) / 250.0)
+      {
+        Plane[0] = (event.clientX - 375.0) / 375.0 * Plane[2] / 2 + Plane[0];
+        Plane[1] = (event.clientY - 250.0) / 250.0 * -Plane[3] / 2 + Plane[1];
+        Plane[2] /= 2;
+        scale /= 2;
+        Plane[3] /= 2;
+      }
+    }    function webGLStart() {
+
+      checkers_cell_width = 30;
+      // default cell width
+
+      Plane[4] = document.getElementById('input_checkers_cell_width').value = checkers_cell_width;      var xmlhttp = new XMLHttpRequest();
+
+      // xmlhttp.open('GET', '/0/data.txt', false);
+      xmlhttp.send(null);
+      if (xmlhttp.status == 200) {
+        alert(xmlhttp.responseText);
+      }
+
+      var canvas = document.getElementById("wegl-canvas");
+      initGL(canvas);
+      initShaders();
+      initBuffers();
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.enable(gl.DEPTH_TEST);
+
+      drawScene();
+      tick();
+    }
+
+    function update_checkers_cell_width() {
+      Plane[4] = parseFloat(document.getElementById('input_checkers_cell_width').value);
+      checkers_cell_width = parseInt(data);
+      if (isNaN(checkers_cell_width))
+        checkers_cell_width = 1;
+      //alert(data);
+    }
+  </script>
+
+
+</head>
+
+
+<body onload="webGLStart();">
+  <canvas id="wegl-canvas" style="border: none;" width="750" height="500" onmousedown="getMouseDown(event);" onmouseup="getMouseUp(event)"
+   onmousemove="getMouseMove(event);" onmousewheel="GetWheelMouse(event)"></canvas>
+
+  <br />
+
+  <label for="input_checkers_cell_width"> cell width</label> <input type="text" id="input_checkers_cell_width"
+    onkeyup="update_checkers_cell_width()"><br>
+
+</body>
+
+</html> 
