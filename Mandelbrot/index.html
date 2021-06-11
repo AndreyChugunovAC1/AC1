@@ -135,8 +135,8 @@
 
     function setMatrixUniforms() {
       Plane[4] = parseFloat(document.getElementById('input_checkers_cell_width').value);
-      if (Plane[4] == undefined || Plane[4] >= 100)
-        Plane[4] = 100;
+      if (Plane[4] == undefined || Plane[4] >= 1000)
+        Plane[4] = 1000;
       gl.uniformMatrix4fv(PlaneMatrixUniform, false, Plane);
       gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
       gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
