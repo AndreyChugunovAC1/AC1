@@ -164,69 +164,78 @@
       gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-
       mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
 
       mat4.identity(mvMatrix);
 
       //mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
-      gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-      //mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
-      setMatrixUniforms();
-      gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
+      //mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
+      gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+      gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+      setMatrixUniforms();
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
     }
-    window.requestAnimationFrame(tick);
+
     function tick() {
-
+      window.requestAnimationFrame(tick);
       drawScene();
-    }    function getMouseDown(event)
+    }
 
-    flagclick = true;
+    function getMouseDown(event)
     {
+      flagclick = true;
       last = {x:event.clientX, y:event.clientY};
     }
-    function getMouseMove(event) {
-      {
+
+    function getMouseMove(event)
+    {
       if (flagclick)
-        Plane[1] += (event.clientY - last.y) / 250.0 * scale;
+      {
         Plane[0] += -(event.clientX - last.x) / 250.0 * scale;
-      }
+        Plane[1] += (event.clientY - last.y) / 250.0 * scale;
         last = {x:event.clientX, y:event.clientY};
+      }
     }
-    function getMouseUp(event) {
+
+    function getMouseUp(event)
+    {
       flagclick = false;
     }
+
     function GetWheelMouse(event)
     {
-      event.clientX -= 3;
-      event.clientY -= 3;
-      if (event.deltaY > 0) {
-        Plane[1] = -(event.clientY - 250.0) / 250.0 * -Plane[3] + Plane[1];
+      event.delta
+    }
+
+    function GetWheelMouse(event)
+    { 
+      if (event.deltaY > 0)
+      {
         Plane[0] = -(event.clientX - 375.0) / 375.0 * Plane[2] + Plane[0];
-        Plane[3] *= 2;
+        Plane[1] = -(event.clientY - 250.0) / 250.0 * -Plane[3] + Plane[1];
         Plane[2] *= 2;
+        Plane[3] *= 2;
         scale *= 2;
       }
       else if (event.deltaY < 0)
-      // ((event.clientX - 375.0) / 375.0; (event.clientY - 250.0) / 250.0)
       {
+        // ((event.clientX - 375.0) / 375.0; (event.clientY - 250.0) / 250.0)
         Plane[0] = (event.clientX - 375.0) / 375.0 * Plane[2] / 2 + Plane[0];
         Plane[1] = (event.clientY - 250.0) / 250.0 * -Plane[3] / 2 + Plane[1];
         Plane[2] /= 2;
-        scale /= 2;
         Plane[3] /= 2;
+        scale /= 2;
       }
     }
-     function webGLStart() {
 
-      checkers_cell_width = 30;
+    function webGLStart() {
       // default cell width
+      checkers_cell_width = 30;
+      Plane[4] = document.getElementById('input_checkers_cell_width').value = checkers_cell_width;
 
-      Plane[4] = document.getElementById('input_checkers_cell_width').value = checkers_cell_width;      var xmlhttp = new XMLHttpRequest();
-
-      // xmlhttp.open('GET', '/0/data.txt', false);
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.open('GET', '/0/data.txt', false);
       xmlhttp.send(null);
       if (xmlhttp.status == 200) {
         alert(xmlhttp.responseText);
