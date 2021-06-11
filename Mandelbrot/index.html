@@ -210,8 +210,6 @@
 
     function GetWheelMouse(event)
     { 
-      event.clientX -= 7;
-      event.clientY -= 7;
       if (event.deltaY > 0)
       {
         Plane[0] = -(event.clientX - 375.0) / 375.0 * Plane[2] + Plane[0];
