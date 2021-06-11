@@ -185,28 +185,18 @@
 
     flagclick = true;
     {
-
       last = {x:event.clientX, y:event.clientY};
     }
-    {
-    function getMouseMove(event)
+    function getMouseMove(event) {
       {
       if (flagclick)
         Plane[1] += (event.clientY - last.y) / 250.0 * scale;
         Plane[0] += -(event.clientX - last.x) / 250.0 * scale;
       }
         last = {x:event.clientX, y:event.clientY};
-
     }
-    {
-    function getMouseUp(event)
-
+    function getMouseUp(event) {
       flagclick = false;
-    }
-    {
-    function GetWheelMouse(event)
-
-      event.delta
     }
     function GetWheelMouse(event)
     {
@@ -228,7 +218,8 @@
         scale /= 2;
         Plane[3] /= 2;
       }
-    }    function webGLStart() {
+    }
+     function webGLStart() {
 
       checkers_cell_width = 30;
       // default cell width
