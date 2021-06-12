@@ -4,44 +4,42 @@
   <title>Mandelbrot</title>
 
   <script type="text/javascript" src="glMatrix-0.9.5.min.js"></script>
-
   <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;   
 
-    uniform mat4 Plane;
+      uniform mat4 Plane;
 
-    void main(void)
-    {
-      float j = Plane[1][0];
-      int n = 0;
-      float k = 0.0;
-      vec3 color;
-      float kx = gl_FragCoord.x / 750.0;
-      float ky = gl_FragCoord.y / 500.0;
-      vec2 X = vec2(Plane[0][0] - Plane[0][2] + kx * 2.0 * Plane[0][2], Plane[0][1]  - Plane[0][3] + ky * 2.0 * Plane[0][3]), Y = X;
-
-      for (int i = 0; i > -1; i++)
+      void main(void)
       {
-        X = vec2(X.x * X.x - X.y * X.y, 2.0 * X.x * X.y) + Y;
-        if (dot(X, X) > 4.0 || float(i) > j)
-          break;
-        n = i;
+        float j = Plane[1][0];
+        int n = 0;
+        float k = 0.0;
+        vec3 color;
+        float kx = gl_FragCoord.x / 750.0;
+        float ky = gl_FragCoord.y / 500.0;
+        vec2 X = vec2(Plane[0][0] - Plane[0][2] + kx * 2.0 * Plane[0][2], Plane[0][1]  - Plane[0][3] + ky * 2.0 * Plane[0][3]), Y = X;
+
+        for (int i = 0; i > -1; i++)
+        {
+          X = vec2(X.x * X.x - X.y * X.y, 2.0 * X.x * X.y) + Y;
+          if (dot(X, X) > 4.0 || float(i) > j)
+            break;
+          n = i;
+        }
+        k = float(n) / j;
+        color = vec3(k * 4.0, k * 2.0, k * 2.0);
+        gl_FragColor = vec4(color, 1.0);    
       }
-      k = float(n) / j;
-      color = vec3(k * 4.0, k * 2.0, k * 2.0);
-      gl_FragColor = vec4(color, 1.0);    
-    }
-</script>
+  </script>
 
   <script id="shader-vs" type="x-shader/x-vertex">
-    attribute vec3 aVertexPosition;
+      attribute vec3 aVertexPosition;
 
-    void main(void)
-    {
-      gl_Position = vec4(aVertexPosition, 1.0);
-    }
-</script>
-
+      void main(void)
+      {
+        gl_Position = vec4(aVertexPosition, 1.0);
+      }
+  </script>
 
   <script type="text/javascript">
     var gl;
@@ -55,59 +53,33 @@
     var PlaneMatrixUniform = 0;
     var checkers_cell_width;
     var last;
-    function initGL(canvas) {
-      try {
-        gl = canvas.getContext("experimental-webgl");
-        gl.viewportWidth = canvas.width;
-        gl.viewportHeight = canvas.height;
-      } catch (e) {
+    let shaderScript;
+    let shaderProgram;
+    async function initShaders() {
+      var fragmentShader;
+      var vertexShader;
+      let response;
+
+      // fragment shader initialization
+      response = await fetch(`https://AndreyChugunovAC1.github.io/Mandelbrot/fragment.txt`);
+      shaderScript = await response.text();
+      // alert(shaderScript);
+      fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+      gl.shaderSource(fragmentShader, shaderScript);
+      gl.compileShader(fragmentShader);
+      if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+        alert(gl.getShaderInfoLog(fragmentShader));
       }
-      if (!gl) {
-        alert("Could not initialise WebGL");
+      // vertex shader initialization
+      response = await fetch(`https://AndreyChugunovAC1.github.io/Mandelbrot/vertex.txt`);
+      shaderScript = await response.text();
+      // alert(shaderScript);
+      vertexShader = gl.createShader(gl.VERTEX_SHADER);
+      gl.shaderSource(vertexShader, shaderScript);
+      gl.compileShader(vertexShader);
+      if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+        alert(gl.getShaderInfoLog(vertexShader));
       }
-    }
-
-
-    function getShader(gl, id) {
-      var shaderScript = document.getElementById(id);
-      if (!shaderScript) {
-        return null;
-      }
-
-      var str = "";
-      var k = shaderScript.firstChild;
-      while (k) {
-        if (k.nodeType == 3) {
-          str += k.textContent;
-        }
-        k = k.nextSibling;
-      }
-
-      var shader;
-      if (shaderScript.type == "x-shader/x-fragment") {
-        shader = gl.createShader(gl.FRAGMENT_SHADER);
-      } else if (shaderScript.type == "x-shader/x-vertex") {
-        shader = gl.createShader(gl.VERTEX_SHADER);
-      } else {
-        return null;
-      }
-
-      gl.shaderSource(shader, str);
-      gl.compileShader(shader);
-
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        alert(gl.getShaderInfoLog(shader));
-        return null;
-      }
-
-      return shader;
-    }
-
-    var shaderProgram;
-
-    function initShaders() {
-      var fragmentShader = getShader(gl, "shader-fs");
-      var vertexShader = getShader(gl, "shader-vs");
 
       shaderProgram = gl.createProgram();
       gl.attachShader(shaderProgram, vertexShader);
@@ -123,9 +95,18 @@
       shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
       gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
       PlaneMatrixUniform = gl.getUniformLocation(shaderProgram, "Plane");
-      //shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-      //shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-      //shaderProgram.cell_width_uniform = gl.getUniformLocation(shaderProgram, "cell_width");
+      endInit();
+    }
+function initGL(canvas) {
+      try {
+        gl = canvas.getContext("experimental-webgl");
+        gl.viewportWidth = canvas.width;
+        gl.viewportHeight = canvas.height;
+      } catch (e) {
+      }
+      if (!gl) {
+        alert("Could not initialise WebGL");
+      }
     }
 
 
@@ -206,11 +187,6 @@
     }
 
     function GetWheelMouse(event)
-    {
-      event.delta
-    }
-
-    function GetWheelMouse(event)
     { 
       if (event.deltaY > 0)
       {
@@ -231,28 +207,22 @@
       }
     }
 
+    function endInit() {
+      initBuffers();
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+      gl.enable(gl.DEPTH_TEST);
+      drawScene();
+      tick();
+    }
     function webGLStart() {
       // default cell width
       checkers_cell_width = 30;
       Plane[4] = document.getElementById('input_checkers_cell_width').value = checkers_cell_width;
 
-      var xmlhttp = new XMLHttpRequest();
-      xmlhttp.open('GET', '/0/data.txt', false);
-      xmlhttp.send(null);
-      if (xmlhttp.status == 200) {
-        alert(xmlhttp.responseText);
-      }
-
       var canvas = document.getElementById("wegl-canvas");
       initGL(canvas);
       initShaders();
-      initBuffers();
-
-      gl.clearColor(0.0, 0.0, 0.0, 1.0);
-      gl.enable(gl.DEPTH_TEST);
-
-      drawScene();
-      tick();
     }
 
     function update_checkers_cell_width() {
