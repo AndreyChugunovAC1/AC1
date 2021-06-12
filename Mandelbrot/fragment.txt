@@ -1,0 +1,25 @@
+precision mediump float;   
+
+uniform mat4 Plane;
+
+void main(void)
+{
+  float j = Plane[1][0];
+  int n = 0;
+  float k = 0.0;
+  vec3 color;
+  float kx = gl_FragCoord.x / 750.0;
+  float ky = gl_FragCoord.y / 500.0;
+  vec2 X = vec2(Plane[0][0] - Plane[0][2] + kx * 2.0 * Plane[0][2], Plane[0][1]  - Plane[0][3] + ky * 2.0 * Plane[0][3]), Y = X;
+
+  for (int i = 0; i > -1; i++)
+  {
+    X = vec2(X.x * X.x - X.y * X.y, 2.0 * X.x * X.y) + Y;
+    if (dot(X, X) > 4.0 || float(i) > j)
+      break;
+    n = i;
+  }
+  k = float(n) / j;
+  color = vec3(k * 4.0, k * 2.0, k * 2.0);
+  gl_FragColor = vec4(color, 1.0);    
+}
