@@ -37,10 +37,12 @@ td {
 }
 .t1 {
     border-radius: 63px;
-    width:100;  
+    width:100;
+    height: 59;
 }
 
 .t2 {
     border-radius: 65px;
-    width:97;  
+    width:97; 
+    height: 59;
 }
