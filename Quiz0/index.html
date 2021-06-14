@@ -1,0 +1,48 @@
+<html>
+
+<head>
+  <title>Quiz0</title>
+  <h1>QUIZ0</h1>
+</head>
+
+
+<body>
+    <script>
+        async function Proj() {
+            let intxt, X, Y;
+
+            response = await fetch(`https://AndreyChugunovAC1.github.io/Quiz0/input.txt`);
+            intxt= await response.text();
+            console.log(intxt); 
+
+            n = parseInt(intxt.slice(2, intxt.indexOf(' ')));
+            intxt = intxt.slice(intxt.indexOf(' ') + 1);
+            intxt = intxt.slice(intxt.indexOf('\n') + 1);            
+            m = []
+            for (var i = 0; i < n; i++) {
+                m.push(parseInt(intxt.slice(0, intxt.indexOf('\n'))));
+                intxt = intxt.slice(intxt.indexOf('\n') + 1);
+            }
+            m.sort();
+            i = 0;
+            flag = true
+            while (i < n) {
+                if (i < n - 1 && m[i] == m[i + 1]) {
+                    i += 3
+                }
+                else {
+                    if (flag)
+                        {X = m[i]; flag = false;}
+                    else
+                        {Y=m[i]}
+                    i++;
+                }
+            }
+            console.log(m);
+            alert(`X=${X}, Y=${Y}`);
+        }
+        Proj();
+    </script>
+</body>
+
+</html> 
