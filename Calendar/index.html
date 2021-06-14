@@ -1,0 +1,101 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="index.css">
+    <title>Calendar</title>
+    <table>
+    <tr>
+        <th colspan="4">Year</th>
+        <th colspan="4">Month</th>
+        <th colspan="3">Day</th>
+    </tr>
+    <tr>
+    <th colspan="4"><input type="number" value="2021" id="year" min="0" max="9999" size="10" onchange="Call()"></th>
+    <th colspan="4"><select onchange="Call()" id="month">
+        <option value="0">Январь</option>
+        <option value="1">Февраль</option>
+        <option value="2">Март</option>
+        <option value="3">Апрель</option>
+        <option value="4">Май</option>
+        <option value="5">Июнь</option>
+        <option value="6">Июль</option>
+        <option value="7">Август</option>
+        <option value="8">Сентябрь</option>
+        <option value="9">Октябрь</option>
+        <option value="10">Ноябрь</option>
+        <option value="11">Декабрь</option>
+    </select></th>
+    <th colspan="3"><input type="number" value="1" id="day" min="0" max="31" size="10" onchange="Call()"></th>
+    </tr>
+    </table>
+</head>
+<body>
+    <table>
+            <td class="t2">Mon</td>
+            <td class="t2">Tue</td>
+            <td class="t2">Wed</td>
+            <td class="t2">Thu</td>
+            <td class="t2">Fri</td>
+            <td class="t2">Sat</td>
+            <td class="t2">Sun</td>
+    </table>
+    <table class="table1" id="maint">
+        <tr>
+            <td id="1" class="t1"></td>
+            <td id="2" class="t1"></td>
+            <td id="3" class="t1"></td>
+            <td id="4" class="t1"></td>
+            <td id="5" class="t1"></td>
+            <td id="6" class="t1"></td>
+            <td id="7" class="t1"></td>
+        </tr>
+        <tr>
+            <td id="8" class="t1"></td>
+            <td id="9" class="t1"></td>
+            <td id="10" class="t1"></td>
+            <td id="11" class="t1"></td>
+            <td id="12" class="t1"></td>
+            <td id="13" class="t1"></td>
+            <td id="14" class="t1"></td>
+        </tr>
+        <tr>
+            <td id="15" class="t1"></td>
+            <td id="16" class="t1"></td>
+            <td id="17" class="t1"></td>
+            <td id="18" class="t1"></td>
+            <td id="19" class="t1"></td>
+            <td id="20" class="t1"></td>
+            <td id="21" class="t1"></td>
+        </tr>
+        <tr>
+            <td id="22" class="t1"></td>
+            <td id="23" class="t1"></td>
+            <td id="24" class="t1"></td>
+            <td id="25" class="t1"></td>
+            <td id="26" class="t1"></td>
+            <td id="27" class="t1"></td>
+            <td id="28" class="t1"></td>
+        </tr>
+        <tr>
+            <td id="29" class="t1"></td>
+            <td id="30" class="t1"></td>
+            <td id="31" class="t1"></td>
+            <td id="32" class="t1"></td>
+            <td id="33" class="t1"></td>
+            <td id="34" class="t1"></td>
+            <td id="35" class="t1"></td>
+        </tr>
+        <tr>
+            <td id="36" class="t1"></td>
+            <td id="37" class="t1"></td>
+            <td id="38" class="t1"></td>
+            <td id="39" class="t1"></td>
+            <td id="40" class="t1"></td>
+            <td id="41" class="t1"></td>
+            <td id="42" class="t1"></td>
+        </tr>
+    </table> 
+    <script src="calendar.js"></script>
+</body>
+
+</html>
