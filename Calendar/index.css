@@ -1,0 +1,46 @@
+    .table1 {
+    /* background: url(fon2.png);*/ 
+    font: normal small-caps bold 50px Cooper Black;
+    color: rgb(34, 185, 123);
+    border-collapse: collapse;
+    border: 0;
+}
+
+.table1 td:hover {
+	background: #becaff;
+}
+.table td:hover:after { 
+	content: '';
+	position: absolute;
+	top: 0px;
+	right: 0px; 
+	bottom: 0px;    
+	left: 0px;
+	border: 3px solid orange;
+}
+
+.text {
+    font-family: Cooper Black;
+    font-size: 140px;
+}
+
+th {
+    width: 40px;
+    border: 0px solid grey;
+}
+td {
+    border-radius: 80px;
+    border: 0px solid grey;
+    /*width: 150;*/
+    /*height: 130;    */
+    text-align: center;
+}
+.t1 {
+    border-radius: 63px;
+    width:100;  
+}
+
+.t2 {
+    border-radius: 65px;
+    width:97;  
+}
