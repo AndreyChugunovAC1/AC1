@@ -32,6 +32,7 @@
             }
         }   
         function tick() {
+            let mes;
             var x = new XMLHttpRequest();
             x.open("GET", 'http://localhost:8080/', true);
             x.onload = function (){
@@ -40,6 +41,7 @@
                 }
             }
             x.send(null);
+            mes = x.response;   
             /*
             mes = xhr2.response;
             if (mes != null) {
