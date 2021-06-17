@@ -26,6 +26,17 @@
     </form>
     <script>
         last = 0;
+        let mes;
+        var x = new XMLHttpRequest();
+        x.open("GET", 'http://localhost:8080/', true);
+        x.onload = function () {
+            for (let i = 0; i < m.length; i++) {
+                AddMessage(m[i].user, m[i].msg);
+            }
+            last = m.length;
+        }
+        x.send();
+        mes = x.responce;
         function AddMessage(name, message) {
             lastmes = {user: name, mes: message};
             var link = document.createElement('p');
