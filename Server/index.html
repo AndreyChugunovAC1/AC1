@@ -29,8 +29,8 @@
         function AddMessage(name, message) {
             lastmes = {user: name, mes: message};
             var link = document.createElement('p');
-            link.innerText = text;
-            var parent = document.getElementById(`${name}: ${message}`);
+            link.innerText = `${name}: ${message}`;
+            var parent = document.getElementById("form chat 2");
             parent.insertBefore(link, parent.firstChild);
         }
         function buttonClick() {
