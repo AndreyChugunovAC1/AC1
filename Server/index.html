@@ -32,6 +32,7 @@
         xxx.open("GET", 'http://localhost:8080/', true);
         xxx.onload = function () {
             for (let i = 0; i < m.length; i++) {
+                m = JSON.parse(x.response);
                 AddMessage(m[i].user, m[i].msg);
             }
             last = m.length;
@@ -58,7 +59,6 @@
             }
         }   
         function tick() {
-            let mes;
             var x = new XMLHttpRequest();
             x.open("GET", 'http://localhost:8080/', true);
             x.onload = function (){
@@ -70,7 +70,6 @@
                 }
             }
             x.send(null);
-            mes = x.response;   
             /*
             mes = xhr2.response;
             if (mes != null) {
