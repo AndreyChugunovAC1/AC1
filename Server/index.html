@@ -51,6 +51,7 @@
             x.open("GET", 'http://localhost:8080/', true);
             x.onload = function (){
                 m = JSON.parse(x.response);
+                alert(m);
                 if (m.lengh != last) {
                     AddMessage(m[m.lengh - 1].user, m[m.lengh - 1].msg);
                     last++;
