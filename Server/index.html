@@ -1,0 +1,55 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <title>Messager</title>
+   <meta charset="UTF-8">
+ </head>
+<body>
+    <form class="form">
+        <h1 class="form_title">Message</h1>
+        <div class="form_grup">
+            <label class="form_label">User</label>
+            <input class="form_input" placeholder=" ">
+        </div>
+        <div class="form_grup">
+            <label class="form_label">Message</label>
+            <input class="form_input"  placeholder=" ">
+        </div>
+        <button class="form_button" id="button1">Send</button>
+    </form>
+    <script>
+        function buttonClick() {
+            n = document.getElementById("input name").value; 
+            m = document.getElementById("input message").value;
+            if (n != '' && m != '') {
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', 'https://localhost:8080/')
+                // console.log(`{"user":"${n}", "msg":"${m}"}`);
+                xhr.send(`{"user":"${n}", "msg":"${m}"}`);
+                document.getElementById("input name").value = '';
+                document.getElementById("input message").value = '';
+            }
+        }   
+        function tick() {
+            var x = new XMLHttpRequest();
+            x.open("GET", 'http://localhost:8080/', true);
+            x.onload = function (){
+                alert( x.responseText);
+            }
+            x.send(null);
+            /*
+            mes = xhr2.response;
+            if (mes != null) {
+                for (i = 0; i < mes.lenght; i++) {
+                    console.log(mes[i]);
+                }
+            }
+            */
+            setTimeout(tick, 5000);
+        }
+        tick();
+    </script>
+</body>
+
+</html>
