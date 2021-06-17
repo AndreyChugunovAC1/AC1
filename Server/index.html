@@ -35,7 +35,9 @@
             var x = new XMLHttpRequest();
             x.open("GET", 'http://localhost:8080/', true);
             x.onload = function (){
-                alert( x.responseText);
+                for (i = 0; i < mes.lenght; i++) {
+                    console.log(mes[i]);    
+                }
             }
             x.send(null);
             /*
