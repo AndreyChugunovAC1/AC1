@@ -52,8 +52,8 @@
             x.onload = function (){
                 m = JSON.parse(x.response);
                 console.log(m[0]);
-                if (m.lengh != last && m[m.lengh - 1] != undefined) {
-                    AddMessage(m[m.lengh - 1].user, m[m.lengh - 1].msg);
+                if (m.length != last && m[m.length - 1] != undefined) {
+                    AddMessage(m[m.length - 1].user, m[m.length - 1].msg);
                     last++;
                 }
             }
