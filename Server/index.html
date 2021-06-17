@@ -18,7 +18,21 @@
         </div>
         <button class="form_button" id="button1" onclick="buttonClick()">Send</button>
     </form>
+    <form class="form" id="form chat 2">
+    <!--
+        <h1 class="form_title2">Chat</h1>
+        <h1 class="form_title3">Chat</h1>
+    -->
+    </form>
     <script>
+        last = 0;
+        function AddMessage(name, message) {
+            lastmes = {user: name, mes: message};
+            var link = document.createElement('p');
+            link.innerText = text;
+            var parent = document.getElementById(`${name}: ${message}`);
+            parent.insertBefore(link, parent.firstChild);
+        }
         function buttonClick() {
             n = document.getElementById("input name").value; 
             m = document.getElementById("input message").value;
@@ -36,8 +50,9 @@
             var x = new XMLHttpRequest();
             x.open("GET", 'http://localhost:8080/', true);
             x.onload = function (){
-                for (i = 0; i < mes.lenght; i++) {
-                    console.log(mes[i]);    
+                if (x.response.lengh != last) {
+                    AddMessage(x.responce[x.responce.lengh - 1].user, x.responce[x.responce.lengh - 1].msg);
+                    last++;
                 }
             }
             x.send(null);
