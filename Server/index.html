@@ -30,10 +30,10 @@
         var x = new XMLHttpRequest();
         x.open("GET", 'http://localhost:8080/', true);
         x.onload = function () {
-            for (let i = 0; i < m.length; i++) {
-                AddMessage(m[i].user, m[i].msg);
+            for (let i = 0; i < mes.length; i++) {
+                AddMessage(mes[i].user, mes[i].msg);
             }
-            last = m.length;
+            last = mes.length;
         }
         x.send();
         mes = x.responce;
