@@ -31,8 +31,8 @@
         var xxx = new XMLHttpRequest();
         xxx.open("GET", 'http://localhost:8080/', true);
         xxx.onload = function () {
+            m = JSON.parse(xxx.response);
             for (let i = 0; i < m.length; i++) {
-                m = JSON.parse(xxx.response);
                 AddMessage(m[i].user, m[i].msg);
             }
             last = m.length;
