@@ -27,16 +27,17 @@
     <script>
         last = 0;
         let mes;
-        var x = new XMLHttpRequest();
-        x.open("GET", 'http://localhost:8080/', true);
-        x.onload = function () {
-            for (let i = 0; i < mes.length; i++) {
-                AddMessage(mes[i].user, mes[i].msg);
+        let m;
+        var xxx = new XMLHttpRequest();
+        xxx.open("GET", 'http://localhost:8080/', true);
+        xxx.onload = function () {
+            for (let i = 0; i < m.length; i++) {
+                AddMessage(m[i].user, m[i].msg);
             }
-            last = mes.length;
+            last = m.length;
         }
-        x.send();
-        mes = x.responce;
+        xxx.send();
+        m = x.responce;
         function AddMessage(name, message) {
             lastmes = {user: name, mes: message};
             var link = document.createElement('p');
