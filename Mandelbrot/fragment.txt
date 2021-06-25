@@ -14,7 +14,7 @@ void main(void)
 
   for (int i = 0; i > -1; i++)
   {
-    X = vec2(X.x * X.x - X.y * X.y, 2.0 * X.x * X.y) + Y;
+    X = vec2(X.x * X.x - X.y * X.y, 2.0 * abs(X.x * X.y)) + Y;
     if (dot(X, X) > 4.0 || float(i) > j)
       break;
     n = i;
