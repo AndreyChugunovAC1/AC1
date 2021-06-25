@@ -8,7 +8,7 @@ void main(void)
   int n = 0;
   float k = 0.0;
   vec3 color;
-  float kx = 1 - gl_FragCoord.x / 750.0;
+  float kx = 1.0 - gl_FragCoord.x / 750.0;
   float ky = gl_FragCoord.y / 500.0;
   vec2 X = vec2(Plane[0][0] - Plane[0][2] + kx * 2.0 * Plane[0][2], Plane[0][1]  - Plane[0][3] + ky * 2.0 * Plane[0][3]), Y = X;
 
